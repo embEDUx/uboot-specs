@@ -13,7 +13,7 @@ SRC_DIR="u-boot"
 DST_CONF="rpi_b_config"
 DST_IMG="u-boot.bin"
 DST_DIR="output"
-DATE="$(date '+%Y%m%d')_$(date '+%H-%M-%S')"
+DST_PRE="$(date '+%Y%m%d')_$(date '+%H-%M-%S')_2014.10"
 
 #####################
 # Script            #
@@ -36,11 +36,11 @@ make -C ${SRC_DIR} -j$(nproc)
 mkdir ${DST_DIR}
 
 if [ -e ${SRC_DIR}/${DST_IMG} ]
-then cp ${SRC_DIR}/${DST_IMG} ${DST_DIR}/${DATE}_${DST_IMG}
+then cp ${SRC_DIR}/${DST_IMG} ${DST_DIR}/${DST_PRE}_${DST_IMG}
 fi
 
 # if [ -e ${SRC_DIR}/MLO ]
-# then cp ${SRC_DIR}/MLO ${DST_DIR}/${DATE}_MLO
+# then cp ${SRC_DIR}/MLO ${DST_DIR}/${DST_PRE}_MLO
 # fi
 
 # Cleanup
