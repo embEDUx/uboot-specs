@@ -6,7 +6,7 @@
 
 ### Sources
 SRC_URL="http://ftp.denx.de/pub/u-boot/"
-SRC_FILE="u-boot-2014.10.tar.bz2"
+SRC_FILE="u-boot-2015.01-rc1.tar.bz2"
 SRC_DIR="u-boot"
 
 ### Outputs
@@ -43,5 +43,5 @@ fi
 # then cp ${SRC_DIR}/MLO ${DST_DIR}/${DST_PRE}_MLO
 # fi
 
-# Cleanup
-rm -rf {SRC_DIR}
+### Cleanup
+rm -rf ${SRC_DIR}
