@@ -1,0 +1,47 @@
+#! /bin/bash -e
+
+#####################
+# Configuration     # 							     
+#####################
+
+### Sources
+SRC_URL="http://ftp.denx.de/pub/u-boot/"
+SRC_FILE="u-boot-2014.10.tar.bz2"
+SRC_DIR="u-boot"
+
+### Outputs
+DST_CONF="am335x_evm_defconfig"
+DST_IMG="u-boot.img"
+DST_DIR="output"
+DST_PRE="$(date '+%Y%m%d')_$(date '+%H-%M-%S')_2014.10"
+
+#####################
+# Script            #
+#####################
+
+### Fetch uboot sources
+mkdir ${SRC_DIR}
+
+wget ${SRC_URL}${SRC_FILE}
+tar -xf ${SRC_FILE} -C ${SRC_DIR} --strip 1
+rm ${SRC_FILE}
+
+### Config
+make -C ${SRC_DIR} ${DST_CONF} 
+
+### Uboot
+make -C ${SRC_DIR} -j$(nproc)
+
+### Copy files to output
+mkdir ${DST_DIR}
+
+if [ -e ${SRC_DIR}/${DST_IMG} ]
+  then cp ${SRC_DIR}/${DST_IMG} ${DST_DIR}/${DST_PRE}_${DST_IMG}
+fi
+
+if [ -e ${SRC_DIR}/MLO ]
+  then cp ${SRC_DIR}/MLO ${DST_DIR}/${DST_PRE}_MLO
+fi
+
+### Cleanup
+rm -rf ${SRC_DIR}
