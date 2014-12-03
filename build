@@ -12,7 +12,8 @@ SRC_DIR="u-boot"
 ### Outputs
 DST_CONF="rpi_b_config"
 DST_IMG="u-boot.bin"
-DST_DIR="output"
+DST_TAR="u-boot.tar"
+OUT_DIR="output"
 DST_PRE="$(date '+%Y%m%d')_$(date '+%H-%M-%S')_2014.10"
 
 #####################
@@ -27,21 +28,17 @@ tar -xf ${SRC_FILE} -C ${SRC_DIR} --strip 1
 rm ${SRC_FILE}
 
 ### Config
-make -C ${SRC_DIR} ${DST_CONF} 
+make -C ${SRC_DIR} ${DST_CONF}
 
 ### Uboot
 make -C ${SRC_DIR} -j$(nproc)
 
 ### Copy files to output
-mkdir ${DST_DIR}
+mkdir ${OUT_DIR}
 
 if [ -e ${SRC_DIR}/${DST_IMG} ]
-then cp ${SRC_DIR}/${DST_IMG} ${DST_DIR}/${DST_PRE}_${DST_IMG}
+	then tar -cf ${OUT_DIR}/${DST_PRE}_${DST_TAR} -C ${SRC_DIR} ${DST_IMG} 
 fi
-
-# if [ -e ${SRC_DIR}/MLO ]
-# then cp ${SRC_DIR}/MLO ${DST_DIR}/${DST_PRE}_MLO
-# fi
 
 ### Cleanup
 rm -rf ${SRC_DIR}
