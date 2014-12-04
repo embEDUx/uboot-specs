@@ -1,47 +1,50 @@
 #! /bin/bash -e
 
-#####################
-# Configuration     # 							     
+####################
+# Configuration     #                    
 #####################
 
 ### Sources
-SRC_URL="http://ftp.denx.de/pub/u-boot/"
-SRC_FILE="u-boot-2015.01-rc1.tar.bz2"
-SRC_DIR="u-boot"
+UBOOT_VERSION="2015.01-rc1"
+UBOOT_CONFIG="am335x_evm_defconfig"
 
 ### Outputs
-DST_CONF="am335x_evm_defconfig"
-DST_IMG="u-boot.img"
-DST_DIR="output"
-DST_PRE="$(date '+%Y%m%d')_$(date '+%H-%M-%S')_2014.10"
+UBOOT_IMG="u-boot.bin"
+UBOOT_MLO="MLO"
 
 #####################
 # Script            #
 #####################
 
-### Fetch uboot sources
-mkdir ${SRC_DIR}
+UBOOT_URL=(`git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}'`)
+UBOOT_DIR="uboot"
 
-wget ${SRC_URL}${SRC_FILE}
-tar -xf ${SRC_FILE} -C ${SRC_DIR} --strip 1
-rm ${SRC_FILE}
+echo "Cloning uboot from '${UBOOT_URL}'"
+git clone ${UBOOT_URL} ${UBOOT_DIR}
+
+cd ${UBOOT_DIR}
+echo "Checking out uboot branch '${UBOOT_VERSION}'"
+git checkout ${UBOOT_VERSION}
+
+echo "Executing build script for uboot branch"
+./build
+cd ..
 
 ### Config
-make -C ${SRC_DIR} ${DST_CONF} 
+echo "Loading ${UBOOT_CONFIG}"
+make -C ${UBOOT_DIR} ${UBOOT_CONFIG}
 
 ### Uboot
-make -C ${SRC_DIR} -j$(nproc)
+echo "Building ${UBOOT_IMG}"
+make -C ${UBOOT_DIR} -j$(nproc)
 
-### Copy files to output
-mkdir ${DST_DIR}
+### Prepare output
+OUTPUT_DIR="output"
+OUTPUT_UBOOT="$(git rev-parse HEAD)_$(git rev-parse --abbrev-ref HEAD)_uboot.tar.gz"
 
-if [ -e ${SRC_DIR}/${DST_IMG} ]
-  then cp ${SRC_DIR}/${DST_IMG} ${DST_DIR}/${DST_PRE}_${DST_IMG}
-fi
+mkdir -p  ${OUTPUT_DIR}
 
-if [ -e ${SRC_DIR}/MLO ]
-  then cp ${SRC_DIR}/MLO ${DST_DIR}/${DST_PRE}_MLO
-fi
+echo "Providing output in ${output}"
 
-### Cleanup
-rm -rf ${SRC_DIR}
+tar -czf ${OUTPUT_DIR}/${OUTPUT_UBOOT} -C ${UBOOT_DIR} ${UBOOT_IMG} ${UBOOT_MLO}
+
