@@ -1,0 +1,28 @@
+#! /bin/bash -e
+
+#####################
+# Configuration     # 							     
+#####################
+
+### Sources
+SRC_DIR="/var/tmp/embedux/downloads"
+UBOOT_URL="http://ftp.denx.de/pub/u-boot"
+UBOOT_FILE="u-boot-2015.01-rc1.tar.bz2"
+
+#####################
+# Script            #
+#####################
+
+### Prepare folder
+mkdir -p  ${SRC_DIR}
+
+### Uboot sources
+if [ ! -e ${SRC_DIR}/${UBOOT_FILE} ]
+  then
+    echo "${UBOOT_FILE} not found in ${SRC_DIR}"
+    echo "Downloading ${UBOOT_FILE} from ${UBOOT_URL}"
+    wget ${UBOOT_URL}/${UBOOT_FILE} -P ${SRC_DIR}
+fi
+
+echo "Extracting ${UBOOT_FILE}"
+tar -xf ${SRC_DIR}/${UBOOT_FILE} --strip 1
