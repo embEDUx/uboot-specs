@@ -5,7 +5,7 @@
 #####################
 
 ### Sources
-SRC_DIR="/var/tmp/embedux/downloads"
+SRC_DIR="/var/tmp/embedux/download"
 UBOOT_URL="http://ftp.denx.de/pub/u-boot"
 UBOOT_FILE="u-boot-2015.01-rc1.tar.bz2"
 
