@@ -32,7 +32,7 @@ echo "Loading ${UBOOT_CONFIG}"
 make -C ${UBOOT_DIR} ${UBOOT_CONFIG}
 
 ### Uboot
-echo "Building ${UBOOT_IMG}"
+echo "Building ${UBOOT_IMG} with $(nproc) jobs"
 make -C ${UBOOT_DIR} -j$(nproc)
 
 ### Prepare output
