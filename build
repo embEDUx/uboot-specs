@@ -36,7 +36,7 @@ make -C ${UBOOT_DIR} -j$(nproc)
 
 ### Prepare output
 OUTPUT_DIR="output"
-OUTPUT_UBOOT="$(git rev-parse --abbrev-ref HEAD)_date +%Y%m%d%H%M%S_$(git rev-parse HEAD)_uboot.tar.gz"
+OUTPUT_UBOOT="$(git rev-parse --abbrev-ref HEAD)_date +%Y%m%d%H%M%S_$(git rev-parse --short HEAD)_uboot.tar.gz"
 
 mkdir -p  ${OUTPUT_DIR}
 
