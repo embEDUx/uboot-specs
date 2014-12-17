@@ -1,5 +1,5 @@
-* The master branch can stay empty.
-* All the other branches are for an individual platform for an individual version of u-boot.
-* Every branch has to contain the *build* script.
-* Other files are optional, but the file handling needs to be dealt with within the *build* script.
+### Write firmware img to sd card
 
+```bash
+dd if=cm-fx6-firmware of=/dev/mmcblk0 bs=1K skip=1 seek=1 oflag=dsync
+```
