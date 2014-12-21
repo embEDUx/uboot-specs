@@ -42,7 +42,7 @@ function build {
   dl_src
   make_defconfig
   make_src
-  if [ $(type -t pre_output) -eq "function" ]
+  if [ $(type -t pre_output) == "function" ]
     then pre_output
   fi
   provide_output
