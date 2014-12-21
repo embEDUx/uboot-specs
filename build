@@ -7,48 +7,28 @@
 ### Sources
 UBOOT_VERSION="2015.01-rc1"
 UBOOT_CONFIG="cm_fx6_defconfig"
-
-### Outputs
+UBOOT_IMG="u-boot.img"
 FIRMWARE_IMG=cm-fx6-firmware
 
 #####################
 # Script            #
 #####################
-UBOOT_URL=(`git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}'`)
-UBOOT_DIR="uboot"
-UBOOT_IMG="u-boot.img"
+SRC_DIR="src"
 
-echo "Cloning uboot from '${UBOOT_URL}'"
-git clone -b ${UBOOT_VERSION} --depth 1 --single-branch ${UBOOT_URL}
+CMD="git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR} && . ${SRC_DIR}/build"
+echo "[INFO] ${CMD}"
+${CMD}
 
-echo "Executing build script for uboot branch"
-cd ${UBOOT_DIR}
-./build
-cd ..
+function pre_output {
+  # http://www.compulab.co.il/utilite-computer/wiki/index.php/Utilite_U-Boot_firmware
+  
+  CMD="dd if=/dev/zero count=500 bs=1K | tr '\000' '\377' > ${SRC_DIR}/${FIRMWARE_IMG}"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+  
+  CMD="dd if=${SRC_DIR}/SPL of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=1 conv=notrunc && dd if=${SRC_DIR}/${UBOOT_IMG} of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=64 conv=notrunc"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+}
 
-### Config
-echo "Loading ${UBOOT_CONFIG}"
-make -C ${UBOOT_DIR} ${UBOOT_CONFIG}
-
-### Uboot
-echo "Building ${UBOOT_IMG} with $(nproc) jobs"
-make -C ${UBOOT_DIR} -j$(nproc)
-
-### Firmware
-# http://www.compulab.co.il/utilite-computer/wiki/index.php/Utilite_U-Boot_firmware
-SPL_FILE=SPL
-
-echo "Building ${FIRMWARE_IMG} from ${SPL_FILE} and ${UBOOT_IMG}"
-dd if=/dev/zero count=500 bs=1K | tr '\000' '\377' > ${FIRMWARE_IMG}
-dd if=${UBOOT_DIR}/${SPL_FILE} of=${UBOOT_DIR}/${FIRMWARE_IMG} bs=1K seek=1 conv=notrunc && dd if=${UBOOT_DIR}/${UBOOT_IMG} of=${UBOOT_DIR}/${FIRMWARE_IMG} bs=1K seek=64 conv=notrunc
-
-### Prepare output
-OUTPUT_DIR="output"
-OUTPUT_UBOOT="$(git rev-parse --abbrev-ref HEAD)_$(date '+%Y%m%d%H%M%S')_$(git rev-parse --short HEAD)_uboot.tar.gz"
-
-mkdir -p  ${OUTPUT_DIR}
-
-echo "Providing output in ${output}"
-
-tar -czf ${OUTPUT_DIR}/${OUTPUT_UBOOT} -C ${UBOOT_DIR} ${FIRMWARE_IMG} 
-
+build
