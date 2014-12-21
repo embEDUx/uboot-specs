@@ -29,6 +29,7 @@ function make_src {
 }
 
 function pre_output {
+  echo ""
 }
 
 function provide_output {
