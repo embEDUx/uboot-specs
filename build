@@ -4,8 +4,6 @@
 # Configuration     # 							     
 #####################
 
-### Sources
-SRC_DIR="/var/tmp/embedux/download"
 UBOOT_URL="http://ftp.denx.de/pub/u-boot"
 UBOOT_FILE="u-boot-2015.01-rc1.tar.bz2"
 
@@ -13,12 +11,50 @@ UBOOT_FILE="u-boot-2015.01-rc1.tar.bz2"
 # Script            #
 #####################
 
-### Prepare folder
-mkdir -p  ${SRC_DIR}
+function dl_src {
+  
+  # Download: for bla in source url
+  CMD="wget -N ${UBOOT_URL}/${UBOOT_FILE} -P ${EMBEDUX_TMP}"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+ 
+  # Extract: for bla in source url
+  CMD="tar -xf ${EMBEDUX_TMP}/${UBOOT_FILE} --strip 1 -C ${SRC_DIR}"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+}
 
-### Uboot sources
-echo "Downloading ${UBOOT_FILE} from ${UBOOT_URL}"
-wget -N ${UBOOT_URL}/${UBOOT_FILE} -P ${SRC_DIR}
+function make_defconfig {
+  CMD="make -C ${SRC_DIR} ${UBOOT_CONFIG}"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+}
 
-echo "Extracting ${UBOOT_FILE}"
-tar -xf ${SRC_DIR}/${UBOOT_FILE} --strip 1
+function make_src {
+  CMD="make -C ${SRC_DIR} -j$(nproc)"
+  echo "[INFO] ${CMD}"
+  ${CMD}
+}
+
+function pre_output {
+  echo "[INFO] function pre_output not defined."
+}
+
+function provide_output {
+  pre_output
+
+  OUTPUT_DIR="output"
+  OUTPUT_PREFIX="$(git rev-parse --abbrev-ref HEAD)_$(date '+%Y%m%d%H%M%S')_$(git rev-parse --short HEAD)"
+  OUTPUT_SUFFIX="uboot.tar.gz"
+  OUTPUT_FILE="${OUTPUT_PREFIX}_${OUTPUT_SUFFIX}"
+
+  CMD="mkdir -p ${OUTPUT_DIR}"
+  CMD="tar -czf ${OUTPUT_DIR}/${OUTPUT_FILE} -C ${SRC_DIR} ${FIRMWARE_IMG}"
+}
+
+function build {
+  dl_src
+  make_defconfig
+  make_src
+  provide_output
+}
