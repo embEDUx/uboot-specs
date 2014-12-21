@@ -8,16 +8,14 @@
 UBOOT_VERSION="2015.01-rc1"
 UBOOT_CONFIG="cm_fx6_defconfig"
 UBOOT_IMG="u-boot.img"
-FIRMWARE_IMG=cm-fx6-firmware
+FIRMWARE_IMG="cm-fx6-firmware"
+SRC_DIR="src"
 
 #####################
 # Script            #
 #####################
-SRC_DIR="src"
 
-git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR}
-
-. ${SRC_DIR}/build
+git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR} && . ${SRC_DIR}/build
 
 function pre_output {
   # http://www.compulab.co.il/utilite-computer/wiki/index.php/Utilite_U-Boot_firmware
