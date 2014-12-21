@@ -28,10 +28,6 @@ function make_src {
   make -C ${SRC_DIR} -j$(nproc)
 }
 
-function pre_output {
-  echo ""
-}
-
 function provide_output {
   OUTPUT_DIR="output"
   OUTPUT_PREFIX="$(git rev-parse --abbrev-ref HEAD)_$(date '+%Y%m%d%H%M%S')_$(git rev-parse --short HEAD)"
@@ -46,6 +42,8 @@ function build {
   dl_src
   make_defconfig
   make_src
-  pre_output
+  if [ $(type -t pre_output) -eq "function" ]
+    then pre_output
+  fi
   provide_output
 }
