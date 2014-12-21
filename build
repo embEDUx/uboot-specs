@@ -48,8 +48,8 @@ function provide_output {
   OUTPUT_SUFFIX="uboot.tar.gz"
   OUTPUT_FILE="${OUTPUT_PREFIX}_${OUTPUT_SUFFIX}"
 
-  CMD="mkdir -p ${OUTPUT_DIR}"
-  CMD="tar -czf ${OUTPUT_DIR}/${OUTPUT_FILE} -C ${SRC_DIR} ${FIRMWARE_IMG}"
+  mkdir -p ${OUTPUT_DIR}
+  tar -czf ${OUTPUT_DIR}/${OUTPUT_FILE} -C ${SRC_DIR} ${FIRMWARE_IMG}
 }
 
 function build {
