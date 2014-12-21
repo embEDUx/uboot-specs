@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/bash -ex
 
 #####################
 # Configuration     # 							     
@@ -15,13 +15,9 @@ FIRMWARE_IMG=cm-fx6-firmware
 #####################
 SRC_DIR="src"
 
-CMD="git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR}"
-echo "[INFO] ${CMD}"
-${CMD}
+git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR}
 
-CMD=". ${SRC_DIR}/build"
-echo "[INFO] $CMD"
-${CMD}
+. ${SRC_DIR}/build
 
 function pre_output {
   # http://www.compulab.co.il/utilite-computer/wiki/index.php/Utilite_U-Boot_firmware
