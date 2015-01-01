@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/bash -ex
 
 #####################
 # Configuration     # 							     
@@ -7,40 +7,13 @@
 ### Sources
 UBOOT_VERSION="2015.01-rc1"
 UBOOT_CONFIG="rpi_b_config"
-
-### Outputs
-UBOOT_IMG="u-boot.bin"
+SRC_DIR="src"
+FIRMWARE_IMG="u-boot.bin"
 
 #####################
 # Script            #
 #####################
 
-UBOOT_URL=(`git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}'`)
-UBOOT_DIR="uboot"
+git clone -b ${UBOOT_VERSION} --depth 1 --single-branch $(git remote -v | sed -n '/.git/{p;q;}' | awk '{print $(NF-1)}') ${SRC_DIR} && . ${SRC_DIR}/build
 
-echo "Cloning uboot from '${UBOOT_URL}'"
-git clone -b ${UBOOT_VERSION} --depth 1 --single-branch ${UBOOT_URL}
-
-echo "Executing build script for uboot branch"
-cd ${UBOOT_DIR}
-./build
-cd ..
-
-### Config
-echo "Loading ${UBOOT_CONFIG}"
-make -C ${UBOOT_DIR} ${UBOOT_CONFIG}
-
-### Uboot
-echo "Building ${UBOOT_IMG} with $(nproc) jobs"
-make -C ${UBOOT_DIR} -j$(nproc)
-
-### Prepare output
-OUTPUT_DIR="output"
-OUTPUT_UBOOT="$(git rev-parse --abbrev-ref HEAD)_date +%Y%m%d%H%M%S_$(git rev-parse --short HEAD)_uboot.tar.gz"
-
-mkdir -p  ${OUTPUT_DIR}
-
-echo "Providing output in ${output}"
-
-tar -czf ${OUTPUT_DIR}/${OUTPUT_UBOOT} -C ${UBOOT_DIR} ${UBOOT_IMG} 
-
+build
