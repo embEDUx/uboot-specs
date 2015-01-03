@@ -7,7 +7,6 @@
 ### Sources
 UBOOT_VERSION="2015.01-rc1"
 UBOOT_CONFIG="cm_fx6_defconfig"
-UBOOT_IMG="u-boot.img"
 FIRMWARE_IMG="cm-fx6-firmware"
 SRC_DIR="src"
 
@@ -21,7 +20,7 @@ function pre_output {
   # http://www.compulab.co.il/utilite-computer/wiki/index.php/Utilite_U-Boot_firmware
   
   dd if=/dev/zero count=500 bs=1K | tr '\000' '\377' > ${SRC_DIR}/${FIRMWARE_IMG}
-  dd if=${SRC_DIR}/SPL of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=1 conv=notrunc && dd if=${SRC_DIR}/${UBOOT_IMG} of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=64 conv=notrunc
+  dd if=${SRC_DIR}/SPL of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=1 conv=notrunc && dd if=${SRC_DIR}/u-boot.img of=${SRC_DIR}/${FIRMWARE_IMG} bs=1K seek=64 conv=notrunc
 }
 
 build
