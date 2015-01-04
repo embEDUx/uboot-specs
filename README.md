@@ -1,5 +1,8 @@
-* The master branch can stay empty.
-* All the other branches are for an individual platform for an individual version of u-boot.
-* Every branch has to contain the *build* script.
-* Other files are optional, but the file handling needs to be dealt with within the *build* script.
+### Write firmware img to sd card
+
+[Banana Pi Wiki](http://linux-sunxi.org/Bootable_SD_card#Bootloader)
+
+```bash
+dd if=u-boot-sunxi-with-spl.bin of=${card} bs=1024 seek=8
+```
 
