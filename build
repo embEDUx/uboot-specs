@@ -8,7 +8,7 @@
 UBOOT_VERSION="2015.01-rc1"
 UBOOT_CONFIG="am335x_evm_defconfig"
 SRC_DIR="src"
-FIRMWARE_IMG="u-boot.bin MLO"
+FIRMWARE_IMG="u-boot.img MLO"
 
 #####################
 # Script            #
